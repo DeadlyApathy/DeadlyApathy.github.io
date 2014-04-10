@@ -147,7 +147,7 @@ function init(){
 
 
 function onResize() {
-  if(!useRift){
+  if(1==1){
     windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
     aspectRatio = window.innerWidth / window.innerHeight;
    
