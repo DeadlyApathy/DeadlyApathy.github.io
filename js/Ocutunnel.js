@@ -29,6 +29,7 @@ var viewDir;
 var velocity;
 var oculusBridge;
 var oculusOrientation;
+var oculusDeltaOrientation=null;
 var boxTexture;
 
 var tunnelOffset;
@@ -185,11 +186,11 @@ function bridgeOrientationUpdated(quatValues) {
   // make a quaternion for the current orientation of the Rift
   var quatCam = new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
 
-  //if (oculusDeltaOrientation==null){
-   //oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w)
+  if (oculusDeltaOrientation==null){
+    oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w)
     // var x = quatCam.multiply(oculusDeltaOrientation.inverse());
     // console.log("HI! ("+x.x+","+x.y+","+x.z+","+x.w+")");
- // }
+  }
   //QTransition = QFinal * QInitial^{-1}
   //Old value = oculusDeltaOrientation
   //New Value quatCam
@@ -213,7 +214,7 @@ function bridgeOrientationUpdated(quatValues) {
 
   // Apply the combined look/body angle to the camera.
   camera.quaternion.copy(quat);
-  //oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
+  oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
 
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
@@ -254,7 +255,6 @@ function onKeyDown(event) {
     playing=false;
     initGeometry();
   }
-  
 
   // prevent repeat keystrokes.
   if(event.keyCode ==32){ // Spacebar to start
@@ -277,19 +277,8 @@ function updateInput(delta) {
   
   genTunnel();
 
-  if(gameover){
-    playing=false;
-    document.getElementById("score_label").innerHTML = "GAME OVER! Score: "+ (score | 0);
-  }
-  if(playing){
-      score += delta;
-      document.getElementById("score_label").innerHTML = "Score: "+ (score | 0);
-    viewDir= new THREE.Vector3( 0, 0, -1 );
-    viewDir.applyQuaternion( camera.quaternion );
 
-
-
-    if(keys[87] || keys[38]){ // W or UP
+if(keys[87] || keys[38]){ // W or UP
       viewAngle += turn_speed;
   }
 
@@ -305,16 +294,17 @@ function updateInput(delta) {
       bodyAngle += turn_speed;
   }
 
-   if(keys[81]){ // E
-      bodyAngle += turn_speed;
-  }   
-  
-  if(keys[69]){ // Q
-       bodyAngle -= turn_speed;
+
+  if(gameover){
+    playing=false;
+    document.getElementById("score_label").innerHTML = "GAME OVER! Score: "+ (score | 0);
   }
-    
-    
-    
+  if(playing){
+      score += delta;
+      document.getElementById("score_label").innerHTML = "Score: "+ (score | 0);
+    viewDir= new THREE.Vector3( 0, 0, -1 );
+    viewDir.applyQuaternion( camera.quaternion );
+
     // update the camera position when rendering to the oculus rift.
     if(useRift) {
 
@@ -327,4 +317,145 @@ function updateInput(delta) {
       camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
     }
     for(var i = 0; i < boxes.length; i++){
-      if(
+      if(boxes[i]){
+        if(Math.abs(boxes[i].position.z-bodyPosition.z) < height/2 &&
+          Math.abs(boxes[i].position.y-bodyPosition.y) < height/2 &&
+          Math.abs(boxes[i].position.x-bodyPosition.x)< height/2)
+          gameover=true;
+        }
+        if(boxes[i].position.z-bodyPosition.z <-10){
+          scene.remove(boxes[i]);
+          boxes[i]=null;
+        }
+    }
+    boxes = boxes.filter(function(e){return e}); 
+  }
+}
+
+function newFrequency(freqencyIn, deltaRate){
+  frequencyOut = freqencyIn + noise.simplex2(ydist,ydist)*deltaRate;
+  if (frequencyOut > maxfreq)
+      frequencyOut = maxfreq;
+
+  if (frequencyOut < minfreq)
+      frequencyOut = minfreq;
+
+  return frequencyOut;
+}
+
+function genTunnel(){
+  while ((maxblocks-boxes.length)>8){
+    //freq=(freq+noise.simplex2(ydist,ydist)/13.37);
+    xfreq=newFrequency(xfreq, 1/10000);
+    zfreq=newFrequency(zfreq, 1/10000);
+    tunnelTrend.x=Math.cos(ydist*xfreq)*height*5;
+    tunnelTrend.z=Math.sin(ydist*zfreq)*height*5;
+        
+    var randcolor= (function(h){return '#000000'.substr(0,7-h.length)+h})((~~((1.0+noise.simplex2(ydist,ydist))/2.0*(1<<24))).toString(16));
+    var material = new THREE.MeshBasicMaterial({ emissive:0x606060, map: boxTexture, color: randcolor});
+    
+    var box1 = new THREE.Mesh( cubeTemp, material);
+    var box2 = new THREE.Mesh( cubeTemp, material);
+    var box3 = new THREE.Mesh( cubeTemp, material);
+    var box4 = new THREE.Mesh( cubeTemp, material);
+
+    var box5 = new THREE.Mesh( cubeTemp, material);
+    var box6 = new THREE.Mesh( cubeTemp, material);
+    var box7 = new THREE.Mesh( cubeTemp, material);
+    var box8 = new THREE.Mesh( cubeTemp, material);
+
+    box1.position.set(2*height+tunnelOffset.x, 3*height/2+tunnelOffset.z ,ydist);
+    boxes.push(box1);
+    scene.add(box1);
+    box2.position.set(height+tunnelOffset.x, 5*height/2 +tunnelOffset.z,ydist);
+    boxes.push(box2)
+    scene.add(box2);
+    box3.position.set(height+tunnelOffset.x, height/2 +tunnelOffset.z,ydist);
+    boxes.push(box3);
+    scene.add(box3);
+    box4.position.set(0+tunnelOffset.x, 3*height/2 +tunnelOffset.z,ydist);
+    boxes.push(box4);
+    scene.add(box4);
+
+    box5.position.set(2*height+tunnelOffset.x, 5*height/2+tunnelOffset.z ,ydist);
+    boxes.push(box5);
+    scene.add(box5);
+    box6.position.set(tunnelOffset.x, 5*height/2 +tunnelOffset.z,ydist);
+    boxes.push(box6)
+    scene.add(box6);
+    box7.position.set(2*height+tunnelOffset.x, height/2+tunnelOffset.z ,ydist);
+    boxes.push(box7);
+    scene.add(box7);
+    box8.position.set(tunnelOffset.x, height/2 +tunnelOffset.z,ydist);
+    boxes.push(box8);
+    scene.add(box8);
+
+    ydist +=height;
+
+    tunnelOffset.x=tunnelTrend.x;
+    tunnelOffset.z=tunnelTrend.z;
+    j++;
+    if (ydist == height){
+        bodyPosition.x=height+tunnelOffset.x;
+        bodyPosition.y=3*height/2+tunnelOffset.z;
+        bodyPosition.z=ydist;
+    }
+
+  }
+}
+
+function animate() {
+  var delta = clock.getDelta();
+  time += delta;
+
+  updateInput(delta);
+  
+  if(render()){
+    requestAnimationFrame(animate);  
+  }
+}
+
+function crashSecurity(e){
+  oculusBridge.disconnect();
+  document.getElementById("viewport").style.display = "none";
+  document.getElementById("security_error").style.display = "block";
+}
+
+function crashOther(e){
+  oculusBridge.disconnect();
+  document.getElementById("viewport").style.display = "none";
+  document.getElementById("generic_error").style.display = "block";
+  document.getElementById("exception_message").innerHTML = e.message;
+}
+
+function render() { 
+  try{
+    if(useRift){
+      riftCam.render(scene, camera);
+    }else{
+      controls.update();
+      renderer.render(scene, camera);
+    }  
+  } catch(e){
+    console.log(e);
+    if(e.name == "SecurityError"){
+      crashSecurity(e);
+    } else {
+      crashOther(e);
+    }
+    return false;
+  }
+  return true;
+}
+
+
+window.onload = function() {
+  myAudio = new Audio('dnb.mp3'); 
+  myAudio.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+  }, false);
+  myAudio.play();
+  init();
+  animate();
+}
