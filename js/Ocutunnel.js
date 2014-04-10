@@ -306,7 +306,7 @@ if(keys[87] || keys[38]){ // W or UP
     viewDir.applyQuaternion( camera.quaternion );
 
     // update the camera position when rendering to the oculus rift.
-    if(useRift) {
+    if(1==1) {
 
         gamespeed=Math.log(score);
         bodyPosition.x += gamespeed*5*delta*viewDir.x;
