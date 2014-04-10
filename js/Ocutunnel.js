@@ -147,7 +147,7 @@ function init(){
 
 
 function onResize() {
-  if(1==1){
+  if(useRift){
     windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
     aspectRatio = window.innerWidth / window.innerHeight;
    
@@ -217,7 +217,7 @@ function bridgeOrientationUpdated(quatValues) {
   oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
 
   // update the camera position when rendering to the oculus rift.
-  if(useRift) {
+  if(1==1) {
     camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
   }
 }
@@ -304,7 +304,7 @@ if(keys[87] || keys[38]){ // W or UP
       document.getElementById("score_label").innerHTML = "Score: "+ (score | 0);
     viewDir= new THREE.Vector3( 0, 0, -1 );
     viewDir.applyQuaternion( camera.quaternion );
-
+    console.log(viewDir);
     // update the camera position when rendering to the oculus rift.
     if(1==1) {
 
