@@ -29,7 +29,6 @@ var viewDir;
 var velocity;
 var oculusBridge;
 var oculusOrientation;
-var oculusDeltaOrientation=null;
 var boxTexture;
 
 var tunnelOffset;
@@ -186,11 +185,11 @@ function bridgeOrientationUpdated(quatValues) {
   // make a quaternion for the current orientation of the Rift
   var quatCam = new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
 
-  if (oculusDeltaOrientation==null){
-    oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w)
+  //if (oculusDeltaOrientation==null){
+   //oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w)
     // var x = quatCam.multiply(oculusDeltaOrientation.inverse());
     // console.log("HI! ("+x.x+","+x.y+","+x.z+","+x.w+")");
-  }
+ // }
   //QTransition = QFinal * QInitial^{-1}
   //Old value = oculusDeltaOrientation
   //New Value quatCam
@@ -214,7 +213,7 @@ function bridgeOrientationUpdated(quatValues) {
 
   // Apply the combined look/body angle to the camera.
   camera.quaternion.copy(quat);
-  oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
+  //oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
 
   // update the camera position when rendering to the oculus rift.
   if(useRift) {
@@ -254,6 +253,30 @@ function onKeyDown(event) {
     gameover=false;
     playing=false;
     initGeometry();
+  }
+  
+   if(keys[87] || keys[38]){ // W or UP
+      viewAngle += turn_speed;
+  }
+
+  if(keys[83] || keys[40]){ // S or DOWN
+      viewAngle -= turn_speed;
+  }
+
+   if(keys[65] || keys[37]){ // A or LEFT
+      bodyAngle -= turn_speed;
+  }   
+  
+  if(keys[68] || keys[39]){ // D or RIGHT
+      bodyAngle += turn_speed;
+  }
+
+   if(keys[81]){ // E
+      bodyAngle += turn_speed;
+  }   
+  
+  if(keys[69]){ // Q
+       bodyAngle -= turn_speed;
   }
 
   // prevent repeat keystrokes.
