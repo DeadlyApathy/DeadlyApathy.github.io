@@ -61,7 +61,7 @@ function initScene() {
   camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 10000);
   camera.useQuaternion = true;
 
-  camera.position.set(100, 150, -300);
+  camera.position.set(7, -15, -50);
   camera.lookAt(scene.position);
 
   // Initialize the renderer
