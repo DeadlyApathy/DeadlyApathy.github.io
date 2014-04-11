@@ -472,7 +472,7 @@ function render() {
 
 
 window.onload = function() {
-  myAudio = new Audio('dnb.mp3'); 
+  myAudio = new Audio('song.wav'); 
   myAudio.addEventListener('ended', function() {
       this.currentTime = 0;
       this.play();
