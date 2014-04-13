@@ -2,14 +2,11 @@ var renderer, camera;
 var scene, element;
 var ambient, point;
 var aspectRatio, windowHalf;
-var mouse, time;
 
-var controls;
 var clock;
 var gamespeed;
 
 var difficulty = 1500;
-var useRift = true;
 var gameover = false;
 var riftCam;
 var ydist = 0;
@@ -21,19 +18,17 @@ var zfreq=1/130;
 var maxfreq=1/160;
 var minfreq=1/200;
 
-var bodyAngle;
-var bodyAxis;
 var bodyPosition;
 var spinAxis;
 var spinAngle =0;
-var viewAngle;
+//var viewAngle;
 var viewDir;
-var reseted=false;
+//var reseted=false;
 
-var velocity;
+
 var oculusBridge;
 var oculusOrientation;
-var oculusDeltaOrientation=null;
+//var oculusDeltaOrientation=null;
 var boxTexture;
 
 var tunnelOffset;
@@ -50,7 +45,6 @@ for(var i = 0; i < 130; i++){
 
 function initScene() {
   clock = new THREE.Clock();
-  mouse = new THREE.Vector2(0, 0);
   tunnelTrend = new THREE.Vector3(0, 0, 0);
 
   windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
@@ -69,39 +63,18 @@ function initScene() {
   renderer.setClearColor(0xdbf7ff);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-   scene.fog = new THREE.Fog(0xdbf7ff, 300, 700);
-
   element = document.getElementById('viewport');
   element.appendChild(renderer.domElement);
 
-  controls = new THREE.OrbitControls(camera);
 }
 
-
-function initLights(){
-
-  ambient = new THREE.AmbientLight(0x222222);
-  scene.add(ambient);
-
-  // point = new THREE.DirectionalLight( 0xffffff, 1, 0, Math.PI, 1 );
-  // point.position.set( -250, 150, 0 );
-
-
-  // scene.add(point);
-
-  // var  point2 = new THREE.DirectionalLight( 0xffffff, 1, 0, Math.PI, 1 );
-  // point2.position.set( 250, -150, 0 );
-
-
-  // scene.add(point2);
-}
 
 function initGeometry(){
   noise.seed(Math.random());
   cubeTemp = new THREE.CubeGeometry(height, height, height);
   tunnelOffset = new THREE.Vector3(0, 0, 0);
   // add some boxes.
-  boxTexture = new THREE.ImageUtils.loadTexture( "textures/tiles.png" );
+  boxTexture = new THREE.ImageUtils.loadTexture( "t.png" );
 
 }
 
@@ -112,31 +85,21 @@ function init(){
 
   document.addEventListener('keydown', onKeyDown, false);
   document.addEventListener('keyup', onKeyUp, false);
-  document.addEventListener('mousemove', onMouseMove, false);
 
-  document.getElementById("start_button").addEventListener("click", function(){
-    playing = true;
-  });
 
-  document.getElementById("help").addEventListener("click", function(){
-    var el = document.getElementById("help-text");
+  document.getElementById("hp").addEventListener("click", function(){
+    var el = document.getElementById("ht");
     el.style.display = (el.style.display == "none") ? "" : "none";
   });
 
-  window.addEventListener('resize', onResize, false);
 
-  time          = Date.now();
-  bodyAngle     = 0;
-  bodyAxis      = new THREE.Vector3(0, 1, 0);
   spinAxis      = new THREE.Vector3(0, 0, 1);
-  bodyPosition  = new THREE.Vector3(10, 100, 0);
-  velocity      = new THREE.Vector3();
+  bodyPosition  = new THREE.Vector3(10, 15, 10);
   score = 1;
   playing = false;
 
   initScene();
   initGeometry();
-  initLights();
   
   oculusBridge = new OculusBridge({
     "debug" : true,
@@ -150,20 +113,6 @@ function init(){
   riftCam = new THREE.OculusRiftEffect(renderer);
 }
 
-
-function onResize() {
-  if(!useRift){
-    windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
-    aspectRatio = window.innerWidth / window.innerHeight;
-   
-    camera.aspect = aspectRatio;
-    camera.updateProjectionMatrix();
-   
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  } else {
-    riftCam.setSize(window.innerWidth, window.innerHeight);
-  }
-}
 
 
 function bridgeConnected(){
@@ -186,17 +135,16 @@ function bridgeOrientationUpdated(quatValues) {
 
   // make a quaternion for the the body angle rotated about the Y axis.
   var quat = new THREE.Quaternion();
-  quat.setFromAxisAngle(bodyAxis, bodyAngle);
   quat.setFromAxisAngle(spinAxis, spinAngle);
 
   // make a quaternion for the current orientation of the Rift
   var quatCam = new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
 
-  if (oculusDeltaOrientation==null){
-    oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w)
+  //if (oculusDeltaOrientation==null){
+    //oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w)
     // var x = quatCam.multiply(oculusDeltaOrientation.inverse());
     // console.log("HI! ("+x.x+","+x.y+","+x.z+","+x.w+")");
-  }
+  //}
   //QTransition = QFinal * QInitial^{-1}
   //Old value = oculusDeltaOrientation
   //New Value quatCam
@@ -216,36 +164,20 @@ function bridgeOrientationUpdated(quatValues) {
 
   // Compute the X/Z angle based on the combined look/body angle.  This will be used for FPS style movement controls
   // so you can steer with a combination of the keyboard and by moving your head.
-  viewAngle = Math.atan2(xzVector.z, xzVector.x) + Math.PI;
+  //viewAngle = Math.atan2(xzVector.z, xzVector.x) + Math.PI;
 
   // Apply the combined look/body angle to the camera.
   camera.quaternion.copy(quat);
-  oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
+  //oculusDeltaOrientation=new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
 
   // update the camera position when rendering to the oculus rift.
-  if(useRift) {
-    camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
-  }
+  camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
 }
 
-
-function onMouseMove(event) {
-  mouse.set( (event.clientX / window.innerWidth - 0.5) * 2, (event.clientY / window.innerHeight - 0.5) * 2);
-}
-
-
-// function onMouseDown(event) {
-//   // Stub
-//   console.log("update.");
-// }
 
 
 function onKeyDown(event) {
 
-  if(event.keyCode == 48){ // zero key.
-    useRift = !useRift;
-    onResize();
-  }
   if(event.keyCode == 82){ // R key.
     var obj, i;
     for(var i = 0; i < boxes.length; i++){
@@ -256,7 +188,7 @@ function onKeyDown(event) {
     score = 1;
     bodyPosition.x=10;
     bodyPosition.y=15;
-    bodyPosition.z=0;
+    bodyPosition.z=10;
     spinAngle=0;
     gameover=false;
     playing=false;
@@ -279,7 +211,6 @@ function onKeyUp(event) {
 
 function updateInput(delta) {
 
-  var step        = 25 * delta;
   var turn_speed  = (55 * delta) * Math.PI / 180;
   
   genTunnel();
@@ -303,16 +234,15 @@ function updateInput(delta) {
 
   if(gameover){
     playing=false;
-    document.getElementById("score_label").innerHTML = "GAME OVER! Score: "+ (score | 0);
+    document.getElementById("s_l").innerHTML = "LOST pnts:"+ (score | 0);
   }
   if(playing){
       score += delta;
-      document.getElementById("score_label").innerHTML = "Score: "+ (score | 0);
+      document.getElementById("s_l").innerHTML = "pnts"+ (score | 0);
     viewDir= new THREE.Vector3( 0, 0, -1 );
     viewDir.applyQuaternion( camera.quaternion );
 
     // update the camera position when rendering to the oculus rift.
-    if(useRift) {
 
         gamespeed=Math.log(score);
         bodyPosition.x += gamespeed*5*delta*viewDir.x;
@@ -345,7 +275,6 @@ function updateInput(delta) {
         }
     }
     boxes = boxes.filter(function(e){return e}); 
-  }
 }
 
 function newFrequency(freqencyIn, deltaRate){
@@ -375,60 +304,28 @@ function genTunnel(){
     tunnelOffset.z=tunnelTrend.z+Math.sin(((ydist%difficulty)+10)*zfreq)*height*5;
 
 
-    var randcolor= (function(h){return '#000000'.substr(0,7-h.length)+h})((~~((1.0+noise.simplex2(ydist,ydist))/2.0*(1<<24))).toString(16));
+    var randcolor= "#"+((1<<24)*(1.0+noise.simplex2(ydist,ydist))/2.0|0).toString(16);
     var material = new THREE.MeshBasicMaterial({ emissive:0x606060, map: boxTexture, color: randcolor});
-    
-    var box1 = new THREE.Mesh( cubeTemp, material);
-    var box2 = new THREE.Mesh( cubeTemp, material);
-    var box3 = new THREE.Mesh( cubeTemp, material);
-    var box4 = new THREE.Mesh( cubeTemp, material);
-
-    var box5 = new THREE.Mesh( cubeTemp, material);
-    var box6 = new THREE.Mesh( cubeTemp, material);
-    var box7 = new THREE.Mesh( cubeTemp, material);
-    var box8 = new THREE.Mesh( cubeTemp, material);
-
-    box1.position.set(2*height+tunnelOffset.x, 3*height/2+tunnelOffset.z ,ydist);
-    boxes.push(box1);
-    scene.add(box1);
-    box2.position.set(height+tunnelOffset.x, 5*height/2 +tunnelOffset.z,ydist);
-    boxes.push(box2)
-    scene.add(box2);
-    box3.position.set(height+tunnelOffset.x, height/2 +tunnelOffset.z,ydist);
-    boxes.push(box3);
-    scene.add(box3);
-    box4.position.set(0+tunnelOffset.x, 3*height/2 +tunnelOffset.z,ydist);
-    boxes.push(box4);
-    scene.add(box4);
-
-    box5.position.set(2*height+tunnelOffset.x, 5*height/2+tunnelOffset.z ,ydist);
-    boxes.push(box5);
-    scene.add(box5);
-    box6.position.set(tunnelOffset.x, 5*height/2 +tunnelOffset.z,ydist);
-    boxes.push(box6)
-    scene.add(box6);
-    box7.position.set(2*height+tunnelOffset.x, height/2+tunnelOffset.z ,ydist);
-    boxes.push(box7);
-    scene.add(box7);
-    box8.position.set(tunnelOffset.x, height/2 +tunnelOffset.z,ydist);
-    boxes.push(box8);
-    scene.add(box8);
+        for(var i = 0; i < 3; i++){
+      for(var j = 0; j < 3; j++){
+          if(i*j!=1){
+            var box = new THREE.Mesh( cubeTemp, material);
+            box.position.set(i*height+tunnelOffset.x, (1+2*j)*height/2+tunnelOffset.z ,ydist);
+            boxes.push(box);
+            scene.add(box);
+          }
+      }
+    }
 
     ydist +=height;
 
     j++;
-    if (ydist == height){
-        bodyPosition.x=height+tunnelOffset.x;
-        bodyPosition.y=3*height/2+tunnelOffset.z;
-        bodyPosition.z=ydist;
-    }
 
   }
 }
 
 function animate() {
   var delta = clock.getDelta();
-  time += delta;
 
   updateInput(delta);
   
@@ -437,34 +334,12 @@ function animate() {
   }
 }
 
-function crashSecurity(e){
-  oculusBridge.disconnect();
-  document.getElementById("viewport").style.display = "none";
-  document.getElementById("security_error").style.display = "block";
-}
-
-function crashOther(e){
-  oculusBridge.disconnect();
-  document.getElementById("viewport").style.display = "none";
-  document.getElementById("generic_error").style.display = "block";
-  document.getElementById("exception_message").innerHTML = e.message;
-}
-
 function render() { 
   try{
-    if(useRift){
       riftCam.render(scene, camera);
-    }else{
-      controls.update();
-      renderer.render(scene, camera);
-    }  
   } catch(e){
     console.log(e);
-    if(e.name == "SecurityError"){
-      crashSecurity(e);
-    } else {
-      crashOther(e);
-    }
+    oculusBridge.disconnect();
     return false;
   }
   return true;

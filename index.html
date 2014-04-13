@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>OculusTunnel - VR Game</title>
+    <title>OcuTunnel-VR Game</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'>
     <link href='css/style.css' rel='stylesheet' type='text/css'>
     <style>
       
@@ -15,22 +14,22 @@
         background-color:rgba(0,0,0,0.4);
       }
 
-      #help-text H1 {
+      #ht H1 {
         font-size:18px;
         margin-top:15px;
 
       }
       
-      #help-text DIV{
+      #ht DIV{
         margin-bottom:5px;
       }
 
-      #help-text DIV LABEL{
+      #ht DIV LABEL{
         display:inline-block;
         width:160px;
       }
 
-      #help-text SECTION {
+      #ht SECTION {
         margin-top:20px;
       }
 
@@ -42,7 +41,7 @@
         margin-right:auto;
         display:none;
       }
-      #score_label{
+      #s_l{
         padding-top:0px;
         padding-left:350px;
          position:absolute;
@@ -54,15 +53,10 @@
   <body>
 
     <a id="logo" class="offline" href="https://github.com/Instrument/oculus-bridge"></a>
-    <div class="label" id="score_label">Score</div>
+    <div class="label" id="s_l">Score</div>
     <div id="info">
-      <div class="button" id="start_button">Start</div> <div class="button" id="help">Info</div>
-      <div id="help-text" style="display:none;">
-              <h1>Game Requirements:</h1>
-        <section>
-          <div><label>Hardware:</label>Oculus Rift</div>
-          <div><label>Software:</label>Oculus Bridge</div>
-        </section>
+      <div class="button" id="hp">help</div>
+      <div id="ht" style="display:none;">
         <h1>Game instructions:</h1>
         <section>
           <div><label>Goal:</label>Earn as many points as possible.</div>
@@ -75,11 +69,7 @@
           <div><label>Start Game:</label>Press Spacebar or Start Button.</div>
           <div><label>Restart:</label>Press R.</div>
         </section>
-       <h1>Credits:</h1>
-        <section>
-          <div><label>Made by:</label>Brian Zhang</div>
-          <div><label>Based on:</label>http://instrument.github.io/oculus-bridge/examples/first_person.html</div>
-        </section>
+
       </div>
     </div>
 
@@ -95,7 +85,6 @@
     <script src="lib/perlin.js"></script>
     <script src="lib/OculusBridge.min.js"></script>
     <script src="lib/three.min.js"></script>
-    <script src="lib/OrbitControls.js"></script>
     <script src="lib/RiftCamera.js"></script>
     <script src="js/Ocutunnel.js"></script>
 
