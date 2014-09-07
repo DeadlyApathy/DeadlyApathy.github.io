@@ -10,7 +10,8 @@ var difficulty = 1500;
 var gameover = false;
 var riftCam;
 var ydist = 0;
-var height = 10;
+var height = 20;
+var foodHeight = 10;
 var boundaryHeight = 400;
 var cubeTemp;
 var sphereTemp;
@@ -19,10 +20,6 @@ var segments = [];
 var badFood = [];
 var goodFood = [];
 var walls = [];
-var xfreq=1/130;
-var zfreq=1/130;
-var maxfreq=1/160;
-var minfreq=1/200;
 var tailCounter=0;
 var bodyPosition;
 var spinAxis;
@@ -39,6 +36,8 @@ var newBadFoods = 3;
 var score;
 var playing;
 var maxblocks=20;
+var badBoxSize = 20;
+
 var j;
 // Map for key states
 var keys = [];
@@ -73,14 +72,24 @@ function initScene() {
 
 function initGeometry(){
   noise.seed(Math.random());
-  cubeTemp = new THREE.CubeGeometry(height, height, height);
+  
+  var maxAnisotropy = 1;
+  
+  cubeTemp = new THREE.CubeGeometry(foodHeight, foodHeight, foodHeight);
   sphereTemp = new THREE.SphereGeometry(height, height, height);
   icosahedronTemp = new THREE.IcosahedronGeometry(2*height);
   boundaryTemp = new THREE.CubeGeometry(boundaryHeight, boundaryHeight, boundaryHeight);
   // add some segments.
   tailTexture = new THREE.ImageUtils.loadTexture( "ohbaby.jpg" );
+  tailTexture.anisotropy = maxAnisotropy;
+
+
   boundaryTexture = new THREE.ImageUtils.loadTexture( "yousofine.png" );
+  boundaryTexture.anisotropy = maxAnisotropy;
+
   foodTexture = new THREE.ImageUtils.loadTexture( "illmakeyoumine.jpg" );
+  foodTexture.anisotropy = maxAnisotropy;
+
   var material = new THREE.MeshBasicMaterial({ emissive:0x909090, map: boundaryTexture, color: 0xdbf7ff});
     for(var i = 0; i < 3; i++){
       for(var j = 0; j < 3; j++){
@@ -100,8 +109,17 @@ function initGeometry(){
   goodFood.push(gFood);
   scene.add(gFood);
 
+  for(var i=0;i < numGoodFoods-1;i++){
+    gFood = new THREE.Mesh( cubeTemp, goodFoodMat);
+    var point = genPoint(i*431 + 123);
+    gFood.position.set(point.x,point.y,point.z);
+    goodFood.push(gFood);
+    scene.add(gFood);
+  }
+
+
   badFoodMat = new THREE.MeshBasicMaterial({ emissive:0x909090, map: foodTexture, color: 0xed2131});
-  // addFoods();
+  
 }
 
 
@@ -122,6 +140,7 @@ function init(){
   spinAxis      = new THREE.Vector3(0, -1, 0);
   bodyPosition  = new THREE.Vector3(boundaryHeight, boundaryHeight, boundaryHeight);
   score = 0;
+  gamespeed=4;
   playing = false;
 
   initScene();
@@ -257,13 +276,13 @@ function updateInput(delta) {
     document.getElementById("s_l").innerHTML = "YOU LOSE! Score:"+ (score | 0);
   }
   if(playing){
-      document.getElementById("s_l").innerHTML = "Score:"+ (score | 0);
+      document.getElementById("s_l").innerHTML = "Score:"+ (score | 0) +"    Speed:" +(gamespeed);
     viewDir= new THREE.Vector3( 0, 0, -1 );
     viewDir.applyQuaternion( camera.quaternion );
 
     // update the camera position when rendering to the oculus rift.
 
-        gamespeed=6;
+        
         bodyPosition.x += gamespeed*5*delta*viewDir.x;
         bodyPosition.y += gamespeed*5*delta*viewDir.y;
         bodyPosition.z += gamespeed*5*delta*viewDir.z;
@@ -293,7 +312,7 @@ function updateInput(delta) {
 
     for(var i = 0; i < badFood.length; i++){
       if(badFood[i]){
-        if(checkCollisionSphere(badFood[i].position,bodyPosition,height*2.2)){
+        if(checkCollisionSphere(badFood[i].position,bodyPosition,badBoxSize)){
           gameover=true;
         }
       }
@@ -301,41 +320,51 @@ function updateInput(delta) {
 
     for(var i = 0; i < goodFood.length; i++){
       if(goodFood[i]){
-        if(checkCollisionBox(goodFood[i].position,bodyPosition,height)){
-          addFoods();
+        if(checkCollisionBox(goodFood[i].position,bodyPosition,foodHeight)){
+          addFoods(goodFood[i]);
+          break;
         }
       }
     }
     segments = segments.filter(function(e){return e}); 
 }
 
-function addFoods(){
-  maxblocks +=7;
+function addFoods(food){
+  //Mod Speed
   score+=100;
+  var x = Math.log(1.0 + (score/200.0));
+  gamespeed =  15.1 * x / (x+1.0);
 
-  for(var i = 0; i <= numGoodFoods; i++){
-    scene.remove(goodFood.shift());
+  maxblocks +=7;
+  var len = goodFood.length;
+  for(var i = 0; i < len; i++){
+    var thisFood = goodFood.pop();
+    if(food === thisFood){
+      scene.remove(thisFood);
+    }else if(thisFood){
+      goodFood.unshift(thisFood)
+    }
   }
 
-  for(var i = 0; i <= numGoodFoods; i++){
+  //for(var i = 0; i <= numGoodFoods; i++){
     var gFood = new THREE.Mesh( cubeTemp, goodFoodMat);
     var hits = false;
     var yolo = 200;
     var point;
     do{
       hits = false;
-      point = genPoint(yolo*420*(i+1));
+      point = genPoint(yolo*420*(1));
 
       for(var j = 0; j < segments.length; j++){
         if(segments[j]){
-          if(checkCollisionSphere(segments[j].position,point,height)){
+          if(checkCollisionSphere(segments[j].position,point,height + foodHeight/2)){
             hits=true;
           }
         }
       }
       for(var j = 0; j < badFood.length; j++){
         if(badFood[j]){
-          if(checkCollisionSphere(badFood[j].position,point,2.2*height)){
+          if(checkCollisionSphere(badFood[j].position,point,badBoxSize + foodHeight/2)){
             hits=true;
           }
         }
@@ -347,27 +376,35 @@ function addFoods(){
     gFood.position.set(point.x,point.y,point.z);
     goodFood.push(gFood);
     scene.add(gFood);
-  }
-
-   for(var i = 0; i <= newBadFoods; i++){
+ // }
+   var count = newBadFoods;
+   for(var i = 0; i <= count; i++){
+    //TODO: check in body
     var bFood = new THREE.Mesh( icosahedronTemp, badFoodMat);
-    var p = genPoint(i);
-    bFood.position.set(p.x,p.y,p.z);
-    badFood.push(bFood);
-    scene.add(bFood);
+    var p = genPoint(i*213);
+
+    if(!checkCollisionSphere(p,bodyPosition,10*height)){
+      bFood.position.set(p.x,p.y,p.z);
+      badFood.push(bFood);
+      scene.add(bFood);
+    }else{
+      count++; 
+    }
+
+    
   }
 }
 
 function genTail(delta){
   tailCounter+=delta;
-  if(tailCounter>.5){
+  if(tailCounter>.65){
   	  tailCounter=0;
 	  if(!(maxblocks>segments.length)){
 	  	scene.remove(segments.shift());
 	  }
     var material = new THREE.MeshBasicMaterial({ emissive:0x606060, map: tailTexture, color: 0xeee2ff});
     var sphere = new THREE.Mesh( sphereTemp, material);
-    sphere.position.set(bodyPosition.x-20*viewDir.x,bodyPosition.y-20*viewDir.y,bodyPosition.z-20*viewDir.z);
+    sphere.position.set(bodyPosition.x-2*height*viewDir.x,bodyPosition.y-2*height*viewDir.y,bodyPosition.z-2*height*viewDir.z);
     segments.push(sphere);
     scene.add(sphere);
   }
