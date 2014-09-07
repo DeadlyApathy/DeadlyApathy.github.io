@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Snake Cubed-VR Game</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link href='css/style.css' rel='stylesheet' type='text/css'>
+    <style>
+      
+      #info{
+        padding:10px;
+        color:#fff;
+        position:absolute;
+        background-color:rgba(0,0,0,0.4);
+      }
+
+      #ht H1 {
+        font-size:18px;
+        margin-top:15px;
+
+      }
+      
+      #ht DIV{
+        margin-bottom:5px;
+      }
+
+      #ht DIV LABEL{
+        display:inline-block;
+        width:160px;
+      }
+
+      #ht SECTION {
+        margin-top:20px;
+      }
+
+      #generic_error,
+      #security_error{
+        padding-top:200px;
+        width:500px;
+        margin-left:auto;
+        margin-right:auto;
+        display:none;
+      }
+      #s_l{
+        padding-top:0px;
+        padding-left:350px;
+         position:absolute;
+      }
+
+    </style>
+
+  </head>
+  <body>
+
+    <a id="logo" class="offline" href="https://github.com/Instrument/oculus-bridge"></a>
+    <div class="label" id="s_l">Score</div>
+    <div id="info">
+      <div class="button" id="hp">help</div>
+      <div id="ht" style="display:none;">
+        <h1>Game instructions:</h1>
+        <section>
+          <div><label>Goal:</label>Earn as many points as possible.</div>
+          <div><label>Avoid Walls:</label>You hit wall and game is over!</div>
+          <div><label>Avoid your tail:</label>You don't taste too good.</div>
+        </section>
+        <h1>Controls:</h1>
+        <section>
+          <div><label>Movement:</label>Look in the Direction you want to move.</div>
+          <div><label>Start Game:</label>Press Spacebar or Start Button.</div>
+          <div><label>Restart:</label>Press R.</div>
+        </section>
+
+      </div>
+    </div>
+
+    <div id="viewport"></div>
+    <div id="security_error">
+      <p>This file must be served via HTTP to support the use of textures.</p>
+      <p>Please host this content via a web server of some kind and try again.</p>
+    </div>
+    <div id="generic_error">
+      <p>Oh dang, something went wrong while trying to render the scene.</p>
+      <p>Exception: <span id="exception_message"></span></p>
+    </div>
+    <script src="lib/perlin.js"></script>
+    <script src="lib/OculusBridge.min.js"></script>
+    <script src="lib/three.min.js"></script>
+    <script src="lib/RiftCamera.js"></script>
+    <script src="js/3dsnake.js"></script>
+
+  </body>
+</html>
