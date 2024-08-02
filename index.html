@@ -1,92 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>OcuTunnel-VR Game</title>
+<html><head>
+    <title>JS1k, 1k demo submission [ID]</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link href='css/style.css' rel='stylesheet' type='text/css'>
-    <style>
-      
-      #info{
-        padding:10px;
-        color:#fff;
-        position:absolute;
-        background-color:rgba(0,0,0,0.4);
-      }
-
-      #ht H1 {
-        font-size:18px;
-        margin-top:15px;
-
-      }
-      
-      #ht DIV{
-        margin-bottom:5px;
-      }
-
-      #ht DIV LABEL{
-        display:inline-block;
-        width:160px;
-      }
-
-      #ht SECTION {
-        margin-top:20px;
-      }
-
-      #generic_error,
-      #security_error{
-        padding-top:200px;
-        width:500px;
-        margin-left:auto;
-        margin-right:auto;
-        display:none;
-      }
-      #s_l{
-        padding-top:0px;
-        padding-left:350px;
-         position:absolute;
-      }
-
-    </style>
-
   </head>
   <body>
+    <canvas id="c"></canvas>
 
-    <a id="logo" class="offline" href="https://github.com/Instrument/oculus-bridge"></a>
-    <div class="label" id="s_l">Score</div>
-    <div id="info">
-      <div class="button" id="hp">help</div>
-      <div id="ht" style="display:none;">
-        <h1>Game instructions:</h1>
-        <section>
-          <div><label>Goal:</label>Earn as many points as possible.</div>
-          <div><label>Avoid Walls:</label>You hit wall and game is over!</div>
-          <div><label>Don't Go Backwards:</label>You will lose if you try.</div>
-        </section>
-        <h1>Controls:</h1>
-        <section>
-          <div><label>Movement:</label>Look in the Direction you want to move.</div>
-          <div><label>Start Game:</label>Press Spacebar or Start Button.</div>
-          <div><label>Restart:</label>Press R.</div>
-        </section>
+    <script>eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('K w,d,e,g,x,y,I,m,u,k,l,s,T,D,A,11,1e;z.1i.N.1W="1U";z.1b.1f="1T";H Y(){w=1s,d=z,e=d.1i,g=d.1J("1b")[0],x=w.1L||e.1w||g.1w,y=w.1N||e.1H||g.1H,I=1,m=y/2,u=0,k=x-y*0.2,l=y/2,s=1,1c=0.1x*F.1y(s+L)*x,d=y*0.2,T=1;A=[y*0.1,y*0.2,y*0.3,y*0.1,y*0.25,y*0.1];11=[y*0.3,y*0.5,y*0.6,y*0.1z,y*0.1S,y*0.1z];D=[x*0.5,x*0.1m,x*0.2,x*0.3,x*0.1P,x*0.8];1e=0}Y();z.1b.1A=\'<p 16=1q N="U:V;Q:-2%;9:-5%;f:1C%;c:1C%;h:#1M;n-r:t"></p><X 16=1h N="U:V;Q:1a%;9:1a%;f:10%;c:10%;h:#B;q-o:v%;n-r:t">1O</X><X 16=1k N="U:V;Q:0%;9:1a%;f:10%;c:10%;h:#B;q-o:v%;n-r:t">1V</X>\';K J=[];1D(K i=0;i<1Y;i++){J.1Q(G)}H 1r(a,b){1R(H(){b()},a)}K j=\'<p N="U:V;Q:\';z.P("1f",1d,G);z.Z("1h").P("1v",1d,G);z.Z("1k").P("1v",Y,G);z.P("1X",1p,G);z.P("1K",1j,G);1s.1I=H 1o(){M(T){z.Z("1q").1A=j+D[0]+"7;9:"+A[0]+\'7;f:10%;c:10%;h:#B;q-o:v%;n-r:t">R</p>\'+j+D[1]+"7;9:"+A[1]+\'7;f:10%;c:10%;h:#B;q-o:v%;n-r:t">S</p>\'+j+D[2]+"7;9:"+A[2]+\'7;f:10%;c:10%;h:#B;q-o:v%;n-r:t">C</p>\'+j+D[3]+"7;9:"+A[3]+\'7;f:10%;c:10%;h:#B;q-o:v%;n-r:t">O</p>\'+j+D[4]+"7;9:"+A[4]+\'7;f:10%;c:10%;h:#B;q-o:v%;n-r:t">E</p>\'+j+D[5]+"7;9:"+A[5]+\'7;f:10%;c:10%;h:#B;q-o:v%;n-r:t;n-2d:2g%">\'+s+"</p>"+j+"10%;9:"+m+\'7;f:5%;c:5%;h:#1n;n-r:1t;q-o:v%"></p>\'+j+"13%;9:"+(0.2f*y+m+4*u/F.19(u))+\'7;f:3%;c:3%;h:#2h;q-o:L%;n-r:t"></p>\'+j+"10%;9:"+m+\'7;f:5%;c:5%;h:#1n;n-r:1t;q-o:v%"></p>\'+j+"10%;9:"+(0.2e*y+m-4*u/F.19(u))+\'7;f:3%;c:3%;h:#2b;q-o:v%"></p>\'+j+"13%;9:"+(-0.23*y+m)+\'7;f:2%;c:3%;h:#1Z;q-o:L%"></p>\'+j+"14%;9:"+(0.22*y+m+u/F.19(u))+\'7;f:.5%;c:.21%;h:#26;q-o:L%;n-r:t"></p>\'+j+(k+0.W*y)+"7;9:0%;f:18%;c:"+(l-d)+\'7;h:#1u"></p>\'+j+(k+0.W*y)+"7;9:"+(l+d)+"7;f:18%;c:"+(y-l-d)+\'7;h:#1u"></p>\'+j+(k+0.W*y)+"7;9:"+(l+d)+"7;f:12%;c:"+(y-l-d)+\'7;h:#1G"></p>\'+j+(k+0.W*y)+"7;9:0%;f:12%;c:"+(l-d)+\'7;h:#1G"></p>\'+j+(k)+"7;9:"+(l+d)+\'7;f:20%;c:5%;h:#1E"></p>\'+j+(k)+"7;9:"+(l-d-y*0.1F)+\'7;f:20%;c:5%;h:#1E"></p>\'+j+(k)+"7;9:"+(l+d)+\'7;f:15%;c:5%;h:#1B"></p>\'+j+(k)+"7;9:"+(l-d-y*0.1F)+\'7;f:15%;c:5%;h:#1B"></p>\';k-=1c;1D(K a=0;a<6;a++){A[a]=(11[a]-m*0.3)}1e+=0.1;M(k<-y*0.4){d=y*(0.2-0.1*(1-F.28(-1*s)));1c=0.1x*F.1y(s+L)*x;s++;k=x;l=y*(0.1+0.8*F.29())}M(J[1g]&I){u=-0.2a*y;I=0}2c{u+=0.24*y}m+=u;M(m>y||m<-0.1*y||(k<0.15*x&k>-0.1*x&(m<l-d||m>l+d-0.1m*y))){T=0}}1r(1,1o)};H 1p(a){J[a.17]=1l}H 1d(a){J[1g]=1l;I=1}H 1j(a){J[a.17]=G;I=1;M(a.17==27){Y()}};',62,142,'|||||||px||top|||height|||width||background||words|wx|wy|py|text|radius||border|align||center|pvy|40||||document|cloudsy|fff||cloudsx||Math|false|function|up|keys|var|100|if|style||addEventListener|left|||playing|position|absolute|025|BUTTON|init|getElementById||cloudsyl|||||id|keyCode||abs|90|body|speed|onTheClick|cnt|scroll|32|fly|documentElement|onKeyUp|reset|true|05|00f|render|onKeyDown|win|sleep|window|right|0c0|click|clientWidth|0002|log|35|innerHTML|0e0|120|for|0d0|06|0f0|clientHeight|onload|getElementsByTagName|keyup|innerWidth|0ef|innerHeight|Fly|65|push|setTimeout|55|no|hidden|Reset|overflow|keydown|130|ddf||75|0018|005|0001||000|82|exp|random|004|009|else|size|015|0075|400|f00'.split('|')))
+</script>
 
-      </div>
-    </div>
-
-    <div id="viewport"></div>
-    <div id="security_error">
-      <p>This file must be served via HTTP to support the use of textures.</p>
-      <p>Please host this content via a web server of some kind and try again.</p>
-    </div>
-    <div id="generic_error">
-      <p>Oh dang, something went wrong while trying to render the scene.</p>
-      <p>Exception: <span id="exception_message"></span></p>
-    </div>
-    <script src="lib/perlin.js"></script>
-    <script src="lib/OculusBridge.min.js"></script>
-    <script src="lib/three.min.js"></script>
-    <script src="lib/RiftCamera.js"></script>
-    <script src="js/Ocutunnel.js"></script>
-
-  </body>
-</html>
+</body></html>
